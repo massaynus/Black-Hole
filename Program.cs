@@ -11,11 +11,11 @@ namespace BlackHole
     {
         static void Main(string[] args)
         {
-            blackhole hole = new blackhole(0, 2, new int[] { 2, 4});
+            blackhole hole = new blackhole(0, 3, new int[] { 2, 2, 2});
 
-            // int t1 = (((hole.Children[1] as blackhole).Children[1] as blackhole).Children[0] as blackhole).getIndex();
-            // int t2 = (((hole.Children[1] as blackhole).Children[1] as blackhole).Children[1] as blackhole).getIndex();
-            // int t4 = (((hole.Children[0] as blackhole).Children[1] as blackhole).Children[1] as blackhole).getIndex();
+            int t1 = (((hole.Children[1] as blackhole).Children[1] as blackhole).Children[0] as blackhole).getIndex();
+            int t2 = (((hole.Children[1] as blackhole).Children[1] as blackhole).Children[1] as blackhole).getIndex();
+            int t4 = (((hole.Children[0] as blackhole).Children[1] as blackhole).Children[1] as blackhole).getIndex();
 
 
             WriteLine(GC.GetTotalMemory(true));
@@ -24,6 +24,8 @@ namespace BlackHole
 
     class blackhole //:IList
     {
+
+        //TODO: implement Add, Search, Remove, Retrieve, Containes
         int dimensions, id, currentDimension;
         public int Dimensions { get { return dimensions; } }
         public int Id { get { return id; } }
@@ -89,12 +91,16 @@ namespace BlackHole
 
         public blackhole firstKey()
         {
+            throw NotImplementedException();
             if (this.isLeaf()) return this;
             else return (this.children[0] as blackhole).firstKey();
+            
         }
 
         public void Add(string key, object value)
         {
+            throw new NotImplementedException();
+
             ulong keyHash = Hash(key);
             blackhole temp = this.firstKey();
         }
