@@ -11,18 +11,18 @@ namespace BlackHole
     {
         static void Main(string[] args)
         {
-            blackhole hole = new blackhole(3, 3, 5, 8);
-            hole.Add("hello", "hello");
+            blackhole hole = new blackhole(0, 3, new int[] {8, 5, 3});
+
+            WriteLine(GC.GetTotalMemory(true));
         }
     }
 
     class blackhole //:IList
     {
-
         int dimensions, id, currentDimension;
         int[] clusterSizes;
 
-        bool hasChildren;
+        bool hasChildren, root;
 
         ArrayList children;
 
@@ -32,10 +32,11 @@ namespace BlackHole
         ///<param name="currentDimension">Just don't pass anything here</param>
         ///<param name="Dimensions">How many Dimensions You need, The Higher the number the faster you'll get your data, be reasonable though</param>
         ///<param name="clusterSizes">How many objects you want in a single cluster, the less here the better, but be cautious</param>
-        public blackhole(int Dimensions, params int[] clusterSizes)
+        public blackhole(int currentDimension, int Dimensions, params int[] clusterSizes)
         {
             this.dimensions = Dimensions ;
             this.clusterSizes = clusterSizes;
+            this.currentDimension = currentDimension;
             children = new ArrayList();
             
             if(Dimensions > 0)
@@ -49,14 +50,15 @@ namespace BlackHole
                         Temp[y] = clusterSizes[y + 1];
                     }
 
-                    
-                    this.children.Add( new blackhole(Dimensions - 1, Temp ) { id = i} );
+                    this.children.Add( new blackhole(this.currentDimension + 1, Dimensions - 1, Temp) { id = i } );
                 }
             }
             else
             {
                 this.hasChildren = false;
             }
+
+            if(this.currentDimension == 0) root = true;
         }
         ulong Hash(string input)
         {
@@ -80,6 +82,11 @@ namespace BlackHole
         {
             ulong keyHash = Hash(key);
             blackhole temp = this.firstKey();
+        }
+
+        public int getIndex()
+        {
+            return 1;
         }
     }
 }
