@@ -11,7 +11,12 @@ namespace BlackHole
     {
         static void Main(string[] args)
         {
-            blackhole hole = new blackhole(0, 3, new int[] {8, 5, 3});
+            blackhole hole = new blackhole(0, 2, new int[] { 2, 4});
+
+            // int t1 = (((hole.Children[1] as blackhole).Children[1] as blackhole).Children[0] as blackhole).getIndex();
+            // int t2 = (((hole.Children[1] as blackhole).Children[1] as blackhole).Children[1] as blackhole).getIndex();
+            // int t4 = (((hole.Children[0] as blackhole).Children[1] as blackhole).Children[1] as blackhole).getIndex();
+
 
             WriteLine(GC.GetTotalMemory(true));
         }
@@ -20,12 +25,16 @@ namespace BlackHole
     class blackhole //:IList
     {
         int dimensions, id, currentDimension;
+        public int Dimensions { get { return dimensions; } }
+        public int Id { get { return id; } }
+        public int CurrentDimension { get { return currentDimension; } }
         int[] clusterSizes;
 
         bool hasChildren, root;
         blackhole parent;
 
         ArrayList children;
+        public ArrayList Children { get { return children; } }
 
         ArrayList values;
         public blackhole() { }
@@ -35,23 +44,23 @@ namespace BlackHole
         ///<param name="clusterSizes">How many objects you want in a single cluster, the less here the better, but be cautious</param>
         public blackhole(int currentDimension, int Dimensions, params int[] clusterSizes)
         {
-            this.dimensions = Dimensions ;
+            this.dimensions = Dimensions;
             this.clusterSizes = clusterSizes;
             this.currentDimension = currentDimension;
             children = new ArrayList();
-            
-            if(Dimensions > 0)
+
+            if (Dimensions > 0)
             {
                 this.hasChildren = true;
-                for(int i = 0; i < clusterSizes[0]; i++)
+                for (int i = 0; i < clusterSizes[0]; i++)
                 {
                     int[] Temp = new int[clusterSizes.Length - 1];
-                    for(int y = 0; y < Temp.Length; y++)
+                    for (int y = 0; y < Temp.Length; y++)
                     {
                         Temp[y] = clusterSizes[y + 1];
                     }
 
-                    this.children.Add( new blackhole(this.currentDimension + 1, Dimensions - 1, Temp) { id = i, parent = this } );
+                    this.children.Add(new blackhole(this.currentDimension + 1, Dimensions - 1, Temp) { id = i, parent = this });
                 }
             }
             else
@@ -59,7 +68,7 @@ namespace BlackHole
                 this.hasChildren = false;
             }
 
-            if(this.currentDimension == 0) 
+            if (this.currentDimension == 0)
             {
                 root = true;
                 parent = null;
@@ -76,6 +85,7 @@ namespace BlackHole
         }
 
         public bool isLeaf() => !this.hasChildren;
+        public bool isRoot() => this.root;
 
         public blackhole firstKey()
         {
@@ -91,10 +101,19 @@ namespace BlackHole
 
         public int getIndex()
         {
-            if(! isLeaf()) return -1;
+            if (!isLeaf()) return -1;
             else
             {
-                return 1;
+                int index = this.id;
+                blackhole temp = this;
+
+                do
+                {
+                    index += temp.parent.id * temp.parent.children.Count;
+                    temp = temp.parent;
+                } while (temp.parent != null);
+
+                return index;
             }
         }
     }
