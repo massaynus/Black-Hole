@@ -91,9 +91,9 @@ namespace BlackHole
 
         public blackhole firstKey()
         {
-            throw NotImplementedException();
-            if (this.isLeaf()) return this;
-            else return (this.children[0] as blackhole).firstKey();
+            throw new NotImplementedException();
+            // if (this.isLeaf()) return this;
+            // else return (this.children[0] as blackhole).firstKey();
             
         }
 
@@ -101,8 +101,8 @@ namespace BlackHole
         {
             throw new NotImplementedException();
 
-            ulong keyHash = Hash(key);
-            blackhole temp = this.firstKey();
+            // ulong keyHash = Hash(key);
+            // blackhole temp = this.firstKey();
         }
 
         public int getIndex()
