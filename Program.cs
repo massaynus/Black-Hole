@@ -23,6 +23,7 @@ namespace BlackHole
         int[] clusterSizes;
 
         bool hasChildren, root;
+        blackhole parent;
 
         ArrayList children;
 
@@ -50,7 +51,7 @@ namespace BlackHole
                         Temp[y] = clusterSizes[y + 1];
                     }
 
-                    this.children.Add( new blackhole(this.currentDimension + 1, Dimensions - 1, Temp) { id = i } );
+                    this.children.Add( new blackhole(this.currentDimension + 1, Dimensions - 1, Temp) { id = i, parent = this } );
                 }
             }
             else
@@ -58,7 +59,11 @@ namespace BlackHole
                 this.hasChildren = false;
             }
 
-            if(this.currentDimension == 0) root = true;
+            if(this.currentDimension == 0) 
+            {
+                root = true;
+                parent = null;
+            }
         }
         ulong Hash(string input)
         {
@@ -86,7 +91,11 @@ namespace BlackHole
 
         public int getIndex()
         {
-            return 1;
+            if(! isLeaf()) return -1;
+            else
+            {
+                return 1;
+            }
         }
     }
 }
